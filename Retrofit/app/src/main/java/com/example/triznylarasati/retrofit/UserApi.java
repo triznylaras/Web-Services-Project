@@ -1,5 +1,7 @@
 package com.example.triznylarasati.retrofit;
 
+import com.squareup.okhttp.ResponseBody;
+
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -10,23 +12,23 @@ import retrofit.http.Path;
 
 import static android.R.attr.id;
 
-/**
- * Created by Trizny Larasati on 10/17/2017.
- */
-
+//this is http method for access API server
 public interface UserApi {
-    @GET("/api/v1/auth")
+    @GET("59ed67e23300004e00b5c596")
     Call<Users> getUsers();
 
-    @GET("/api/v1/auth{id}")
+    @GET("59ed67e23300004e00b5c596")
     Call<User> getUser(@Path("id") String user_id);
 
-    @PUT("/api/v1/auth/{id}")
+    @GET("59ed67e23300004e00b5c596")
+    Call<ResponseBody> getResultAsJSON();
+
+    @PUT("59ed67e23300004e00b5c596")
     Call<User> updateUser(@Path("id") int user_id, @Body User user);
 
-    @POST("/api/v1/auth")
+    @POST("59ed67e23300004e00b5c596")
     Call<User> saveUser(@Body User user);
 
-    @DELETE("/api/v1/auth/{id}")
+    @DELETE("59ed67e23300004e00b5c596")
     Call<User> deleteUser(@Path("id") String user_id);
 }

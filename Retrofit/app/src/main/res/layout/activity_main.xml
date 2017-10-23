@@ -1,37 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     android:orientation="vertical"
     tools:context="com.example.triznylarasati.retrofit.MainActivity">
 
-    <TextView
-        android:id="@+id/tv_respond"
-        android:layout_width="match_parent"
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:id="@+id/progressBar"
+        android:paddingTop="0dp"
         android:layout_alignParentTop="true"
-        android:text="New Text" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_product"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:fillViewport="true"
-        android:layout_marginTop="20dp">
+        android:layout_margin="16dp">
+    </android.support.v7.widget.RecyclerView>
 
-        <TextView
-            android:id="@+id/tv_result_api"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/tv_respond"
-            android:layout_marginTop="27dp"
-            android:text="New Text" />
-    </ScrollView>
-
-</RelativeLayout>
+</LinearLayout>

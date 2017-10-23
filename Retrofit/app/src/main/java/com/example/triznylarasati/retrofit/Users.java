@@ -4,10 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by Trizny Larasati on 10/17/2017.
- */
-
+//this class is used for get all data from API
+//this model is used for extract data GSON
+//this structure class created based on GSON object structure
 public class Users {
     @SerializedName("users")
     public List<UserItem> users;

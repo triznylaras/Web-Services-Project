@@ -1,9 +1,6 @@
 package com.example.triznylarasati.retrofit;
 
-/**
- * Created by Trizny Larasati on 10/17/2017.
- */
-
+//this class is used for insert, update, and delete data from API
 public class User {
     private int id;
     private String email;

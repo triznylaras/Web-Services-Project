@@ -1,11 +1,18 @@
 package com.example.triznylarasati.retrofit;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.List;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -14,57 +21,70 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
-    TextView tv_respond, tv_result_api;
+    private MyAdapter mAdapter;
+    ProgressBar progress_bar;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tv_respond = (TextView) findViewById(R.id.tv_respond);
-        tv_result_api = (TextView)findViewById(R.id.tv_result_api);
 
+        //inisiasi progress bar untuk meng-handle UI process
+        progress_bar = (ProgressBar) findViewById(R.id.progressBar);
+        progress_bar.setVisibility(View.VISIBLE);
+
+        //inisiasi recyclerview dan layoutmanager nya
+        final RecyclerView rv_product = (RecyclerView) findViewById(R.id.rv_product);
+        rv_product.setLayoutManager(new LinearLayoutManager(this));
+
+        //inisiasi gson object untuk mengubah data json menjadi java
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.mocky.io/v2/59e5acd31100006c0eec6972")
+                .baseUrl("http://www.mocky.io/v2/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        //inisiasi user_api dan dipanggil pakai retrofit
         UserApi user_api = retrofit.create(UserApi.class);
 
-        //implement interface for get all user
+        //this for init progress dialog
+        final ProgressDialog progress_dialog = new ProgressDialog(this);
+        progress_dialog.setIndeterminate(true);
+        progress_dialog.setMessage("Loading...");
+        progress_dialog.show();
+
+        //implement interface to get all user
         Call<Users> call = user_api.getUsers();
         call.enqueue(new Callback<Users>() {
 
             @Override
             public void onResponse(Response<Users> response, Retrofit retrofit) {
-                int status = response.code();
-                tv_respond.setText(String.valueOf(status));
+                List<Users.UserItem> users = response.body().getUsers(); //siapin list users dan ambil response body text nya
 
-                //this extract data from retrofit with for() loop
-                for (Users.UserItem user : response.body().getUsers()) {
-                    tv_result_api.append(
-                            "Id = " + String.valueOf(user.getId()) +
-                                    System.getProperty("line.separator") +
-                                    "Email = " + user.getEmail() +
-                                    System.getProperty("line.separator") +
-                                    "Password = " + user.getPassword() +
-                                    System.getProperty("line.separator") +
-                                    "Token Auth = " + user.getToken_auth() +
-                                    System.getProperty("line.separator") +
-                                    "Created at = " + user.getCreated_at() +
-                                    System.getProperty("line.separator") +
-                                    "Updated at = " + user.getUpdated_at() +
-                                    System.getProperty("line.separator") +
-                                    System.getProperty("line.separator")
-                    );
+                //setup adapter buat masukin data dari recycler view
+                mAdapter = new MyAdapter(getApplicationContext()); //siapin layout nya
+                LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+                llm.setOrientation(LinearLayoutManager.VERTICAL);
+
+                rv_product.setLayoutManager(llm);
+                rv_product.setAdapter(mAdapter);
+
+                //masukkin list user nya satu persatu
+                for(int i=0;i<users.size();i++){
+                    //Log.e("data", String.format("data %s ",users.get(i).getEmail()));
+                    mAdapter.add(users.get(i));
+                    if (progress_dialog.isShowing())
+                        progress_dialog.dismiss();
                 }
             }
+
             @Override
-            public void onFailure(Throwable t) {
-                tv_respond.setText(String.valueOf(t));
+            public void onFailure(Throwable t) { //kalau get api tdk memberi kembalian lagi, maka selesai
+                if (progress_dialog.isShowing())
+                    progress_dialog.dismiss();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
